@@ -35,6 +35,7 @@
                             </button>
 
                             <p class="text-center">Belum Punya Akun? <a href="{{route('register')}}">Buat Akun</a></p>
+                            <p class="text-center">Lupa Password? <a href="{{route('lupaPassword')}}">Lupa Password</a></p>
 
                         </form>
                     </div>

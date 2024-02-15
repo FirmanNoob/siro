@@ -1,5 +1,7 @@
 @extends('layouts.master')
-
+@php
+$counter = 1;
+@endphp
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4">Table Pelatihan Peserta</h4>
@@ -12,35 +14,37 @@
             </div>
         </div>
         <div class="table-responsive text-nowrap">
-            <table class="table" id="myTable">
+            <table class="table">
                 <thead>
                     <tr>
-                        <th>Nama Pelatihan</th>
-                        <th>Peserta</th>
-                        <th>Tanggal Awal</th>
-                        <th>Lokasi</th>
-                        <th>Gambar</th>
-                        <th>Action</th>
+                        <th>No</th>
+                        <th>Pelatihan</th>
+                        <th>Alasan Batalkan pelatihan</th>
+                        <th>Tanggal Permintaan</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-                    @foreach($data_pelatihan as $pelatihan)
+                    @foreach($data as $pelatihan)
+                    @if($pelatihan->user_id === auth()->id())
                     <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href="pelatihan/{{$pelatihan->id}}/dashboard">{{ $pelatihan->nama_Pelatihan }}</a> </td>
-                        <td>{{ $pelatihan->jumlahPeserta() }}</td>
-                        <td>{{ $pelatihan->tanggal_awal->format('l, d-M-Y') }}</td>
-                        <td>{{ $pelatihan->lokasi }}</td>
-                        <td><img src="{{ asset('gambar-pelatihan/'.$pelatihan->gambar) }}" alt="" width="100"></td>
+                        <td>{{ $counter++ }}</td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i>{{ $pelatihan->pelatihan->nama_Pelatihan }} </td>
+                        <td>{{ $pelatihan->alasanPembatalan }}</td>
+                        <td>tes</td>
+                        <td><span class="badge rounded-pill bg-warning">{{ $pelatihan->status }}</span> </td>
+                        <!-- <td><img src="{{ asset('gambar-pelatihan/'.$pelatihan->gambar) }}" alt="" width="100"></td>
                         <td>
                             <a href="pelatihan/{{$pelatihan->id}}/update" class="btn rounded-pill btn-primary">Update</a>
                             <a href="/pelatihan/{{$pelatihan->id}}/delete" class="btn rounded-pill btn-danger">delete</a>
-                        </td>
+                        </td> -->
                     </tr>
+                    @endif
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
-    <!--/ Basic Bootstrap Table -->
 </div>
+<!--/ Basic Bootstrap Table -->
 @endsection

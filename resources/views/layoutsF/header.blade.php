@@ -29,16 +29,9 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="products.html">Cek Sertifikat</a>
-                </li>
-
-                <li class="nav-item">
                     <a class="nav-link {{ Request::is('panduan') ? 'active' : '' }}" href="panduan">Panduan</a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('contact') ? 'active' : '' }}" href="contact">Contact</a>
-                </li>
             </ul>
 
             <div class="d-none d-lg-block">

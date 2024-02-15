@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\userPelatihan;
+use App\Models\Session;
 
 class Pelatihan extends Model
 {
@@ -26,5 +27,10 @@ class Pelatihan extends Model
     public function jumlahPeserta()
     {
         return $this->pesertas->count();
+    }
+
+    public function sesiPelatihans()
+    {
+        return $this->hasMany(Sesi::class, 'pelatihan_id');
     }
 }

@@ -8,7 +8,7 @@
             <div class="col-lg-10 col-12">
                 <h4>
                     <span class="d-block text-primary">{{$pelatihan->nama_Pelatihan}}</span>
-                    <span class="d-block text-dark">Fashionable Stuffs</span>
+                    <!-- <span class="d-block text-dark">Fashionable Stuffs</span> -->
                 </h4>
             </div>
         </div>
@@ -21,7 +21,7 @@
 
             <div class="col-lg-6 col-12">
                 <div class="product-thumb">
-                    <img src="{{ asset('storage/gambar-pelatihan/'.$pelatihan->gambar) }}" class="img-fluid product-image" alt="">
+                    <img src="{{ asset('gambar-pelatihan/'.$pelatihan->gambar) }}" width="640" height="800px" class="img-fluid product-image" alt="">
                 </div>
             </div>
 

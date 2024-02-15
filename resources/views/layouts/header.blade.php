@@ -10,7 +10,10 @@
         <div class="navbar-nav align-items-center">
             <div class="nav-item d-flex align-items-center">
                 <i class="bx bx-search fs-4 lh-0"></i>
-                <input type="text" class="form-control border-0 shadow-none" placeholder="Search..." aria-label="Search..." />
+                <form action="{{ route('pelatihanUser') }}" method="get">
+                    <input type="text" name="keyword" class="form-control border-0 shadow-none" placeholder="Search..." aria-label="Search..." />
+                    <button type="submit" hidden>Cari</button>
+                </form>
             </div>
         </div>
         <!-- /Search -->
@@ -65,3 +68,41 @@
         </ul>
     </div>
 </nav>
+<script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+        var query = this.value;
+
+        if (query.length >= 2) {
+            axios.get('/pelatihanUser', {
+                    params: {
+                        query: query
+                    }
+                })
+                .then(function(response) {
+                    displayResults(response.data);
+                })
+                .catch(function(error) {
+                    console.error(error);
+                });
+        } else {
+            document.getElementById('searchResults').innerHTML = '';
+        }
+    });
+
+    function displayResults(trainings) {
+        var resultsContainer = document.getElementById('searchResults');
+        resultsContainer.innerHTML = '';
+
+        if (trainings.length === 0) {
+            resultsContainer.innerHTML = '<p>Tidak ada hasil pelatihan ditemukan.</p>';
+        } else {
+            var ul = document.createElement('ul');
+            trainings.forEach(function(training) {
+                var li = document.createElement('li');
+                li.textContent = training.nama_pelatihan;
+                ul.appendChild(li);
+            });
+            resultsContainer.appendChild(ul);
+        }
+    }
+</script>

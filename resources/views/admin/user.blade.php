@@ -2,12 +2,11 @@
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4">List Peserta</h4>
+    <h4 class="fw-bold py-3 mb-4">Table Peserta</h4>
 
     <!-- Basic Bootstrap Table -->
     <div class="card">
         <h5 class="card-header">Table Peserta</h5>
-        <!-- <button type="button" class="btn btn-primary">Primary</button> --><!-- Button trigger modal -->
         <div class="table-responsive text-nowrap">
             <table class="table" id="myTable">
                 <thead>

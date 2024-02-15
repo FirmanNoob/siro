@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Pelatihan;
 use App\Models\Pengaduan;
+use App\Models\Sesi;
+use App\Models\Session;
 use App\Models\User;
 use App\Models\userPelatihan;
 use Carbon\Carbon;
@@ -28,14 +30,23 @@ class DashboardController extends Controller
 
 
 
-    public function pelatihanUser()
+    public function pelatihanUser(Request $request)
     {
         $user = auth()->user();
         // $data = Pelatihan::all();
         $data = Pelatihan::orderBy('created_at', 'desc')->get();
+        $keyword = $request->input('keyword');
+
+        $trainings = Pelatihan::where('nama_pelatihan', 'like', '%' . $keyword . '%')
+            ->orWhere('deskripsi', 'like', '%' . $keyword . '%')
+            ->get();
+
+        // return response()->json($trainings);
+
+        // return view('trainings.index', compact('trainings'));
 
         // return view('admin.pelatihanUser', compact('user', 'data'));
-        return view('admin.pelatihanUser', ['user' => $user, 'data' => $data]);
+        return view('admin.pelatihanUser', ['user' => $user, 'data' => $data, 'trainings' => $trainings]);
     }
     public function pelatihanUserDetail()
     {
@@ -67,7 +78,7 @@ class DashboardController extends Controller
             return redirect()->route('dashboard')->with('success', 'Anda berhasil mengikuti pelatihan.');
         }
 
-        return redirect()->route('dashboard')->with('failed', 'Anda sudah terdaftar pada pelatihan ini.');
+        return redirect()->route('pelatihanUser')->with('failed', 'Anda sudah terdaftar pada pelatihan ini.');
         // 
 
         // $request->request->add(['user_id', 'pelatihan_id' => auth()->user()->id]);
@@ -83,9 +94,18 @@ class DashboardController extends Controller
 
     public function pelatihanDashboard($id)
     {
+        $data_pelatihan = Pelatihan::all();
+        $data  = Pelatihan::with('sesiPelatihans')->findOrFail($id);
+        $pesertas = $data->pesertas;
+        $sesiPelatihans = $data->sesiPelatihans;
+        return view('admin.pelatihanDashboard', ['data' => $data, 'pesertas' => $pesertas, 'data_pelatihan' => $data_pelatihan, 'sesiPelatihans' => $sesiPelatihans]);
+    }
+    public function pembatalanPelatihan($id)
+    {
+        $data_pelatihan = Pelatihan::all();
         $data  = Pelatihan::find($id);
         $pesertas = $data->pesertas;
-        return view('admin.pelatihanDashboard', ['data' => $data, 'pesertas' => $pesertas]);
+        return view('admin.pembatalanPelatihan', ['data' => $data, 'pesertas' => $pesertas, 'data_pelatihan' => $data_pelatihan]);
     }
 
 
@@ -201,10 +221,9 @@ class DashboardController extends Controller
 
     public function pelatihanUserSesi($id)
     {
-        // $sesiPelatihan = userPelatihan::find($id, auth()->user()->id)->get();
-        $sesiPelatihan = Pelatihan::find($id);
-        // return view('admin.sesiPelatihan', ['sesiPelatihan' => $sesiPelatihan]);
-        return view('admin.sesiPelatihan', compact('sesiPelatihan'));
+        $pelatihan = Pelatihan::with('sesiPelatihans')->findOrFail($id);
+        // dd($pelatihan);
+        return view('admin.sesiPelatihan', compact('pelatihan'));
     }
     public function approveAndGenerateCertificate($userId, $trainingId)
     {
@@ -279,6 +298,8 @@ class DashboardController extends Controller
         // Move the Y position to the end of the multi-cell text
         // $fpdi->SetY($fpdi->GetY() + 50);
         // ...
+        $tandaTanganPath = storage_path('app/public/certificate_templates/ttd.png');
+        $fpdi->Image($tandaTanganPath, 100, 143, 80);
 
         // Simpan sertifikat ke storage
         $path = "certificates/{$userId}_{$trainingId}_certificate.pdf";
@@ -322,7 +343,7 @@ class DashboardController extends Controller
     public function pengaduan()
     {
         $data = Pengaduan::all();
-        return view('admin.pengaduan',compact('data'));
+        return view('admin.pengaduan', compact('data'));
     }
     public function pengaduanCreate(Request $request)
     {
@@ -346,25 +367,24 @@ class DashboardController extends Controller
         $data['laporan']     = $request->laporan;
         $data['gambar']     = $filename;
         $data['user_id'] = $user_id;
-        
+
         Pengaduan::create($data);
 
         return redirect()->route('pengaduan')->with('success', 'Data Pelatihan Berhasil Ditambahkan');
-
     }
     public function submitResponse(Request $request, $id)
     {
-    $request->validate([
-        'tanggapan' => 'required|string',
-    ]);
+        $request->validate([
+            'tanggapan' => 'required|string',
+        ]);
 
-    $pengaduan = Pengaduan::findOrFail($id);
-    $pengaduan->tanggapan = $request->tanggapan;
-    $pengaduan->status = 'Selesai Diverifikasi'; // Change the status as needed
-    $pengaduan->response_at = Carbon::now();
-    $pengaduan->save();
+        $pengaduan = Pengaduan::findOrFail($id);
+        $pengaduan->tanggapan = $request->tanggapan;
+        $pengaduan->status = 'Selesai Diverifikasi'; // Change the status as needed
+        $pengaduan->response_at = Carbon::now();
+        $pengaduan->save();
 
-    return redirect()->route('pengaduan')->with('success', 'Tanggapan berhasil ditambahkan');
+        return redirect()->route('allPengaduan')->with('success', 'Tanggapan berhasil ditambahkan');
     }
     public function tanggapan($id)
     {
@@ -376,11 +396,143 @@ class DashboardController extends Controller
         $pengaduan = Pengaduan::findOrFail($id);
         return view('admin.detailPengaduan', compact('pengaduan'));
     }
-    
+
 
     public function allPengaduan()
     {
         $data = Pengaduan::all();
         return view('admin.allPengaduan', compact('data'));
+    }
+
+    // public function cancelTraining($userTrainingId)
+    // {
+    //     $userTraining = userPelatihan::findOrFail($userTrainingId);
+
+    //     // Verifikasi apakah pengguna yang mencoba membatalkan adalah pemilik pelatihan
+    //     if ($userTraining->user_id !== auth()->user()->id) {
+    //         abort(403, 'Anda tidak memiliki izin untuk membatalkan pelatihan ini.');
+    //     }
+
+    //     // Verifikasi apakah pelatihan dapat dibatalkan (mungkin ada batas waktu)
+    //     // ...
+
+    //     // Lakukan logika pembatalan pelatihan
+    //     $userTraining->delete();
+
+    //     return redirect()->back()->with('success', 'Pelatihan berhasil dibatalkan.');
+    // }
+    public function cancelTraining(Request $request, $trainingId)
+    {
+        $user = auth()->user();
+
+        // Temukan pelatihan yang akan dibatalkan
+        $userTraining = userPelatihan::where('user_id', $user->id)
+            ->where('pelatihan_id', $trainingId)
+            ->first();
+
+        // Periksa apakah pengguna sudah terdaftar pada pelatihan
+        if ($userTraining) {
+            // Validasi alasan pembatalan
+            $request->validate([
+                'alasanPembatalan' => 'required|string',
+            ]);
+
+            // Simpan alasan pembatalan dan ubah status menjadi "pending"
+            $userTraining->update([
+                'alasanPembatalan' => $request->input('alasanPembatalan'),
+                'status' => 'pending',
+            ]);
+
+            return redirect()->route('dashboard')->with('success', 'Permintaan pembatalan pelatihan telah diajukan.');
+        } else {
+            // Jika tidak terdaftar, berikan pesan atau redirect sesuai kebutuhan
+            return redirect()->route('dashboard')->with('error', 'Anda tidak terdaftar pada pelatihan ini.');
+        }
+    }
+    public function approveCancellation(Request $request, $userTrainingId)
+    {
+        $admin = auth()->user();
+
+        // Temukan pembatalan pelatihan yang akan disetujui
+        $userTraining = userPelatihan::findOrFail($userTrainingId);
+
+        // // Periksa apakah admin yang memiliki wewenang untuk menyetujui
+        // if ($admin->hasRole('operator')) {
+        //     // Pastikan admin yang menyetujui adalah admin yang membuat pelatihan tersebut
+        //     if ($admin->id === $userTraining->training->admin_id) {
+        //         // Setujui pembatalan
+        //         $userTraining->update([
+        //             'status' => 'approved',
+        //             'approved_by' => $admin->id,
+        //         ]);
+
+        //         return redirect()->route('dashboard')->with('success', 'Pembatalan pelatihan disetujui.');
+        //     } else {
+        //         return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki izin untuk menyetujui pembatalan ini.');
+        //     }
+        // } else {
+        //     return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki izin untuk menyetujui pembatalan ini.');
+        // }
+        // Periksa apakah pengguna yang login memiliki peran sebagai admin
+        $userTraining->delete();
+        $userTraining->update([
+            'status' => 'approved',
+            'approved_by' => $admin->id,
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Pembatalan pelatihan disetujui.');
+    }
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        Pelatihan::where('nama_pelatihan', 'like', '%' . $keyword . '%')
+            ->orWhere('deskripsi', 'like', '%' . $keyword . '%')
+            ->get();
+
+        // return view('trainings.index', compact('trainings'));
+    }
+
+    function sertifikat()
+    {
+        $pelatihan = userPelatihan::all();
+        $pesertas = userPelatihan::where('pelatihan_id')->get();
+
+        return view('user.sertifikat', ['pelatihan' => $pelatihan, 'pesertas' => $pesertas]);
+    }
+    function permintaanPembatalan()
+    {
+        $data = userPelatihan::all();
+        return view('user.permintaanPembatalan', compact('data'));
+    }
+    public function viewTambahSesi($pelatihanId)
+    {
+        $data = Pelatihan::findOrFail($pelatihanId);
+        return view('admin.tambahSesi', compact('data'));
+    }
+    public function store(Request $request)
+    {
+        $request->validate([
+            'namasesi' => 'required|string|max:255',
+            'tanggal' => 'required|date',
+            'waktuMulai' => 'required|date_format:H:i',
+            'waktuBerakhir' => 'required|date_format:H:i|after:waktuMulai',
+            'deskripsi' => 'required|string',
+            'link' => 'url|nullable', // Make sure it's a valid URL or null
+            // Add validation rules for other columns as needed
+        ]);
+
+        Sesi::create([
+            'pelatihan_id' => $request->input('pelatihan_id'),
+            'namasesi' => $request->input('namasesi'),
+            'tanggal' => $request->input('tanggal'),
+            'waktuMulai' => $request->input('waktuMulai'),
+            'waktuBerakhir' => $request->input('waktuBerakhir'),
+            'deskripsi' => $request->input('deskripsi'),
+            'link' => $request->input('link'),
+            // Tambahkan kolom lain sesuai kebutuhan
+        ]);
+
+        return redirect()->route('pelatihan', $request->input('pelatihan_id'))->with('success', 'Sesi berhasil ditambahkan.');
     }
 }

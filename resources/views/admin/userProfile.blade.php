@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4">Pengaturan Account</h4>
+    <h4 class="fw-bold py-3 mb-4">Pengaturan Akun</h4>
 
     <div class="row">
         <div class="col-md-12">
@@ -116,7 +116,6 @@
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="pterakhir" class="form-label">Pendidikan Terakhir</label>
-                                <!-- <input class="form-control" type="text" id="pterakhir" name="pterakhir" value="{{ old('pterakhir', $user->pterakhir) }}" placeholder="john.doe@example.com" /> -->
                                 <select name="pterakhir" id="pterakhir" class="form-control">
                                     <option value="SD" {{ old('pterakhir', $user->pterakhir) === 'SD' ? 'selected' : '' }}>SD</option>
                                     <option value="SMP" {{ old('pterakhir', $user->pterakhir) === 'SMP' ? 'selected' : '' }}>SMP</option>
@@ -150,7 +149,6 @@
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="alamat" class="form-label">Alamat</label>
-                                <!-- <input class="form-control" type="text" id="alamat" name="alamat" value="{{ old('alamat', $user->alamat) }}" placeholder="john.doe@example.com" /> -->
                                 <textarea id="basic-icon-default-message" name="alamat" class="form-control" placeholder="Alamat" aria-label="Hi, Do you have a moment to talk Joe?" aria-describedby="basic-icon-default-message2">{{ old('alamat', $user->alamat) }}</textarea>
                                 @error('alamat')
                                 <div class="alert alert-danger">{{ $message }}</div>

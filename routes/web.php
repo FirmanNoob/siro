@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FillPDFController;
+use App\Http\Controllers\ForgetPasswordManager;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\SesiController;
 
@@ -38,11 +39,19 @@ Route::get('/logout', [SesiController::class, 'logout'])->name('logout');
 
 Route::get('/register', [SesiController::class, 'register'])->name('register');
 Route::post('/register-proses', [SesiController::class, 'register_proses'])->name('register-proses');
+Route::get('/lupaPassword', [ForgetPasswordManager::class, 'lupaPassword'])->name('lupaPassword');
+Route::post('/lupaPasswordPost', [ForgetPasswordManager::class, 'lupaPasswordPost'])->name('lupaPasswordPost');
+Route::get('/resetPassword/{token}', [ForgetPasswordManager::class, 'resetPassword'])->name('resetPassword');
+// Route::get('/reset-password/{token}', function ($token) {
+//     return 'Berhasil';
+// })->name('password.reset');
+Route::post('/reset-Password', [ForgetPasswordManager::class, 'resetPasswordPost'])->name('resetPasswordPost');
 // Route::prefix('admin')->middleware('auth')->group(function () {
 // });
 Route::group(['middleware' => ['auth', 'CekRole:operator']], function () {
     Route::get('/pelatihan', [DashboardController::class, 'pelatihan'])->name('pelatihan');
     Route::get('/pelatihan/{id}/dashboard', [DashboardController::class, 'pelatihanDashboard'])->name('pelatihanDashboard');
+    Route::get('/pelatihan/{id}/pembatalan', [DashboardController::class, 'pembatalanPelatihan'])->name('pembatalanPelatihan');
     Route::get('/pelatihan/tambah', [DashboardController::class, 'pelatihan_tambah'])->name('pelatihan.tambah');
     Route::post('/pelatihan/tambah-proses', [DashboardController::class, 'pelatihan_tambah_proses'])->name('pelatihan.tambah-proses');
     Route::get('/pelatihan/{id}/update', [DashboardController::class, 'pelatihan_update'])->name('pelatihan.update');
@@ -51,7 +60,9 @@ Route::group(['middleware' => ['auth', 'CekRole:operator']], function () {
     Route::get('/profil', [SesiController::class, 'profil'])->name('profil');
     Route::post('/training/approve-certificate/{userId}/{trainingId}', [DashboardController::class, 'approveAndGenerateCertificate'])->name('approveAndGenerateCertificate');
     Route::get('/allPengaduan', [DashboardController::class, 'allPengaduan'])->name('allPengaduan');
-
+    Route::post('/approve-cancellation/{userTraining}', [DashboardController::class, 'approveCancellation'])->name('approve-cancellation');
+    Route::get('/viewTambahSesi/{pelatihanId}', [DashboardController::class, 'viewTambahSesi'])->name('viewTambahSesi');
+    Route::post('/sesipelatihan/store', [DashboardController::class, 'store'])->name('sesipelatihan.store');
 });
 Route::group(['middleware' => ['auth', 'CekRole:operator,peserta']], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -64,9 +75,14 @@ Route::group(['middleware' => ['auth', 'CekRole:operator,peserta']], function ()
     Route::get('/download-certificate/{userId}/{trainingId}', [DashboardController::class, 'downloadCertificate'])->name('downloadCertificate');
     Route::get('/profile', [SesiController::class, 'profil'])->name('profile');
     Route::patch('/profile/update', [SesiController::class, 'updateProfile'])->name('profile.update');
-    Route::get('/pengaduan',[DashboardController::class, 'pengaduan'])->name('pengaduan');
-    Route::post('/pengaduan',[DashboardController::class, 'pengaduanCreate'])->name('pengaduanCreate');
+    Route::get('/pengaduan', [DashboardController::class, 'pengaduan'])->name('pengaduan');
+    Route::post('/pengaduan', [DashboardController::class, 'pengaduanCreate'])->name('pengaduanCreate');
     Route::get('/tanggapan/{id}', [DashboardController::class, 'tanggapan'])->name('tanggapan');
     Route::post('/admin/pengaduan/{id}/respond', [DashboardController::class, 'submitResponse'])->name('admin.submit-response');
     Route::get('/detailPengaduan/{id}', [DashboardController::class, 'detailPengaduan'])->name('detailPengaduan');
+    // Route::delete('/training/cancel/{userTrainingId}', [DashboardController::class, 'cancelTraining'])->name('cancelTraining');
+    Route::post('/cancel-training/{training}', [DashboardController::class, 'cancelTraining'])->name('cancel-training');
+    Route::get('/trainings/search', [DashboardController::class, 'search'])->name('trainings.search');
+    Route::get('/sertifikat', [DashboardController::class, 'sertifikat'])->name('sertifikat');
+    Route::get('/permintaanPembatalan', [DashboardController::class, 'permintaanPembatalan'])->name('permintaanPembatalan');
 });

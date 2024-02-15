@@ -78,9 +78,6 @@
                         <button class="nav-link" id="pills-youtube-tab" data-bs-toggle="pill" data-bs-target="#pills-youtube" type="button" role="tab" aria-controls="pills-youtube" aria-selected="true">Profil</button>
                     </li>
 
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="pills-skill-tab" data-bs-toggle="pill" data-bs-target="#pills-skill" type="button" role="tab" aria-controls="pills-skill" aria-selected="false">Capabilites</button>
-                    </li>
                 </ul>
             </div>
 
@@ -110,7 +107,7 @@
 
                                     <div class="mt-2 mt-lg-auto">
                                         <a href="{{ route('about') }}" class="custom-link mb-2">
-                                            Learn more about us
+                                            Tentang Kami
                                             <i class="bi-arrow-right ms-2"></i>
                                         </a>
                                     </div>
@@ -147,51 +144,6 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="pills-skill" role="tabpanel" aria-labelledby="pills-skill-tab">
-                        <div class="row">
-                            <div class="col-lg-7 col-12">
-                                <img src="{{ asset('depan/images/cody-lannom-G95AReIh_Ko-unsplash.jpeg') }}" class="img-fluid" alt="">
-                            </div>
-
-                            <div class="col-lg-5 col-12">
-                                <div class="d-flex flex-column h-100 ms-lg-4 mt-lg-0 mt-5">
-                                    <h4 class="mb-3">What can help you?</h4>
-
-                                    <p>Over three years in business, We’ve had the chance on projects</p>
-
-                                    <div class="skill-thumb mt-3">
-
-                                        <strong>Branding</strong>
-                                        <span class="float-end">90%</span>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width: 90%;"></div>
-                                        </div>
-
-                                        <strong>Design & Stragety</strong>
-                                        <span class="float-end">70%</span>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%;"></div>
-                                        </div>
-
-                                        <strong>Online Platform</strong>
-                                        <span class="float-end">80%</span>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%;"></div>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="mt-2 mt-lg-auto">
-                                        <a href="products.html" class="custom-link mb-2">
-                                            Explore products
-                                            <i class="bi-arrow-right ms-2"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
@@ -207,34 +159,45 @@
                 <h2 class="mb-5">Pelatihan Bangdiklat</h2>
             </div>
             @foreach($pelatihan as $p)
+            @if($p->tanggal_berakhir >= now())
             <div class="col-lg-4 col-12 mb-3">
                 <div class="product-thumb">
-                    <a href="/pelatihan/{{$p->id}}/detail">
+                    <a href="{{ route('pelatihan-detail', $p->id)}}">
                         <img src="{{ asset('gambar-pelatihan/'.$p->gambar) }}" class="img-fluid product-image" alt="">
                     </a>
-
-                    <div class="product-top d-flex">
-                        <span class="product-alert me-auto">New Arrival</span>
-
-                        <a href="#" class="bi-heart-fill product-icon"></a>
-                    </div>
-
                     <div class="product-info d-flex">
                         <div>
                             <h5 class="product-title mb-0">
-                                <a href="/pelatihan/{{$p->id}}/detail" class="product-title-link">{{ $p->nama_Pelatihan }}</a>
+                                <a href="{{ route('pelatihan-detail', $p->id)}}" class="product-title-link">{{ $p->nama_Pelatihan }}</a>
                             </h5>
-                            <p class="product-p">Dibuka</p>
+                            <p class="product-p text-success">Dibuka</p>
                             <p class="product-p">Lokasi : {{ $p->lokasi }}</p>
                             <p class="product-p">Registrasi : {{ $p->tanggal_awal->format('l, d-M-Y') }} - {{ $p->tanggal_berakhir->format('l, d-M-Y') }}</p>
-                            <p class="product-p">Kouta In : {{ $p->kouta }}</p>
-                            <p class="product-p">Kouta Ex : 50</p>
                         </div>
 
-                        <small class="product-price text-muted ms-auto mt-auto mb-5">$25</small>
                     </div>
                 </div>
             </div>
+            @else
+            <div class="col-lg-4 col-12 mb-3">
+                <div class="product-thumb">
+                    <a href="{{ route('pelatihan-detail', $p->id)}}">
+                        <img src="{{ asset('gambar-pelatihan/'.$p->gambar) }}" class="img-fluid product-image" alt="">
+                    </a>
+                    <div class="product-info d-flex">
+                        <div>
+                            <h5 class="product-title mb-0">
+                                <a href="{{ route('pelatihan-detail', $p->id)}}" class="product-title-link">{{ $p->nama_Pelatihan }}</a>
+                            </h5>
+                            <p class="product-p text-danger">Ditutup</p>
+                            <p class="product-p">Lokasi : {{ $p->lokasi }}</p>
+                            <p class="product-p">Registrasi : {{ $p->tanggal_awal->format('l, d-M-Y') }} - {{ $p->tanggal_berakhir->format('l, d-M-Y') }}</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            @endif
             @endforeach
 
 

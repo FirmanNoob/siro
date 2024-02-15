@@ -1,6 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
+
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4">Riwayat Pelatihan Saya</h4>
 
@@ -18,16 +19,49 @@
                             <p class="card-text">
                                 Jadwal : {{ $data->pelatihan->tanggal_awal->format('l, d-M-Y') }} - {{ $data->pelatihan->tanggal_berakhir->format('l, d-M-Y') }}
                             </p>
-                            <p class="card-text">
-                                <a href="{{ $data->pelatihan->link }}">Klik Disini</a>
-                            </p>
-                            <p><b>Harga :</b> Gratis</p>
-                            <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
-                            <a href="pelatihanUserSesi/{{$data->pelatihan->id}}" class="btn rounded-pill btn-primary">Detail</a>
-                            <!-- <a href="{{ route('downloadCertificate', ['userId' => auth()->user()->id, 'trainingId' => $data->pelatihan_id]) }}" class="btn btn-primary">Download Sertifikat</a> -->
-                            @if ($data->is_approved)
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a href="pelatihanUserSesi/{{$data->pelatihan->id}}" class="btn rounded-pill btn-primary">Detail</a>
+                                </div>
+                                <!-- Button pembatalan -->
+                                <div class="col-md-6">
+
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn rounded-pill btn-primary" data-bs-toggle="modal" data-bs-target="#backDropModal">
+                                        Batalkan
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="backDropModal" data-bs-backdrop="static" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <form class="modal-content" action="{{ route('cancel-training', $data->pelatihan->id) }}" method="post">
+                                                @csrf
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="backDropModalTitle">Modal title</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col mb-3">
+                                                            <label for="alasanPembatalan" class="form-label">Alasan Pembatalan</label>
+                                                            <textarea name="alasanPembatalan" class="form-control" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- @if ($data->is_approved)
                             <a href="{{ route('downloadCertificate', ['userId' => $data->user_id, 'trainingId' => $data->pelatihan_id]) }}" class="btn btn-success">Download Sertifikat</a>
-                            @endif
+                            @endif -->
                         </div>
                     </div>
                 </div>

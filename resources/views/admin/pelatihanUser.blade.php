@@ -4,7 +4,7 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4">Pelatihan Peserta</h4>
     <div class="row mb-5">
-        @foreach($data as $pelatihan)
+        @foreach($trainings as $pelatihan)
         @if($pelatihan->tanggal_berakhir >= now())
         <div class="col-md-6 col-lg-4 mb-3">
             <div class="card h-100">
@@ -18,14 +18,12 @@
                     <form action="{{ route('createpelatihanUser', $pelatihan->id) }}" method="post">
                         @csrf
 
-                        <button type="submit" class="btn btn-outline-primary">Mengikuti Pelatihan</button>
+                        <button type="submit" class="btn btn-outline-primary">Ikuti Pelatihan</button>
                     </form>
                 </div>
             </div>
         </div>
         @else
-        <!-- <p>Pelatihan ini sudah berakhir pada {{$pelatihan->tanggal_berakhir}}</p>
-     -->
         <div class="col-md-6 col-lg-4 mb-3">
             <div class="card h-100">
                 <img class="card-img-top" src="{{ asset('gambar-pelatihan/'.$pelatihan->gambar) }}" width="374" height="374" alt="Card image cap">
@@ -35,11 +33,6 @@
                     <p class="card-text mt-2">
                         {{ $pelatihan->deskripsi }}
                     </p>
-                    <!-- <form action="{{ route('createpelatihanUser', $pelatihan->id) }}" method="post">
-                        @csrf
-
-                        <button type="submit" class="btn btn-outline-primary">Mengikuti Pelatihan</button>
-                    </form> -->
                 </div>
             </div>
         </div>
@@ -48,4 +41,5 @@
 
     </div>
 </div>
+
 @endsection

@@ -47,7 +47,7 @@
 
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
-        <li class="menu-item {{ Request::is('dashboard') ? 'active' : '' }}">
+        <li class="menu-item {{ Request::is('dashboard') ? 'active' : '' }}{{ Request::is('pelatihanDashboard') ? 'active' : '' }}">
             <a href="{{ route('dashboard') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
@@ -66,21 +66,10 @@
                 <div data-i18n="Analytics">pelatihanUserDetail</div>
             </a>
         </li> -->
-        <li class="menu-item {{ Request::is('profile') ? 'active' : '' }}">
-            <a href="{{ route('profile') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx bxs-user"></i>
-                <div data-i18n="Analytics">Profile</div>
-            </a>
-        </li>
-        <li class="menu-item {{ Request::is('pengaduan') ? 'active' : '' }}">
-            <a href="{{ route('pengaduan') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx bxs-user"></i>
-                <div data-i18n="Analytics">pengaduan</div>
-            </a>
-        </li>
+
         @if (auth()->user()->role=="operator")
         <!-- Layouts -->
-        <li class="menu-item">
+        <li class="menu-item {{ Request::is('pelatihan') ? 'active open' : '' }}{{ Request::is('pelatihan/tambah') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-table"></i>
                 <div data-i18n="Layouts">Pelatihan</div>
@@ -100,16 +89,45 @@
             </ul>
 
         </li>
+        @endif
+        <li class="menu-item {{ Request::is('profile') ? 'active' : '' }}">
+            <a href="{{ route('profile') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx bxs-user"></i>
+                <div data-i18n="Analytics">Profile</div>
+            </a>
+        </li>
+
+        @if (auth()->user()->role=="operator")
         <li class="menu-item {{ Request::is('listUser') ? 'active' : '' }}">
             <a href="{{ route('listUser') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-user"></i>
                 <div data-i18n="Analytics">List Peserta</div>
             </a>
         </li>
+        @endif
+        <li class="menu-item {{ Request::is('pengaduan') ? 'active' : '' }}">
+            <a href="{{ route('pengaduan') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-wrench"></i>
+                <div data-i18n="Analytics">Pengaduan</div>
+            </a>
+        </li>
+        <li class="menu-item {{ Request::is('permintaanPembatalan') ? 'active' : '' }}">
+            <a href="{{ route('permintaanPembatalan') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-certification"></i>
+                <div data-i18n="Analytics">Permintaan Pembatalan Pelatihan</div>
+            </a>
+        </li>
+        <li class="menu-item {{ Request::is('sertifikat') ? 'active' : '' }}">
+            <a href="{{ route('sertifikat') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-certification"></i>
+                <div data-i18n="Analytics">Sertifikat</div>
+            </a>
+        </li>
+        @if (auth()->user()->role=="operator")
         <li class="menu-item {{ Request::is('allPengaduan') ? 'active' : '' }}">
             <a href="{{ route('allPengaduan') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-user"></i>
-                <div data-i18n="Analytics">Semua Pengaduan</div>
+                <i class="menu-icon tf-icons bx bxs-cog"></i>
+                <div data-i18n="Analytics">List Pengaduan</div>
             </a>
         </li>
 

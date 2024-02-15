@@ -132,6 +132,9 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
+    <!-- Page JS -->
+    <script src="{{ asset('belakang/assets/js/ui-modals.js') }}"></script>
+
     <!-- Datatables -->
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
